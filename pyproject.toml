@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zp42"
+version = "0.1.0"
+description = "ZP42 Cyber Reasoning System foundation scaffold for defensive, active-defense, and sovereign-authorized workflows."
+requires-python = ">=3.11"
+license = "LicenseRef-Proprietary"
+authors = [{ name = "iQs Group Inc." }]
+maintainers = [{ name = "iQs Group Inc." }]
+readme = "README.md"
+keywords = ["cyber-reasoning", "defensive", "security", "governance"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+]
+
+dependencies = [
+    "pytest>=7.4.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit>=3.0.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+]
+
+[tool.setuptools]
+packages = ["core", "orchestrator", "verifiers", "governance", "compliance"]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+include = '\.pyi?$'
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+select = ["E", "F", "I", "N", "W", "UP"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+check_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts = "-v --tb=short"

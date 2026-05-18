@@ -1,0 +1,111 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-05-18",
+  "policy": {
+    "name": "ZP42 Model Allowlist and PRC-Origin Exclusion Policy",
+    "description": "Approved models for ZP42 cyber reasoning system. No PRC-origin models, outputs, embeddings, labels, checkpoints, synthetic data, or derivatives permitted.",
+    "enforcement": "fail_closed"
+  },
+  "approved_models": [
+    {
+      "name": "AI2 OLMo 3 32B Base",
+      "organization": "Allen Institute for AI",
+      "origin_country": "USA",
+      "license": "Apache-2.0",
+      "huggingface_id": "allenai/OLMo-3-32B",
+      "approved_date": "2026-05-18",
+      "use_cases": [
+        "general_reasoning",
+        "defensive_analysis",
+        "threat_modeling"
+      ],
+      "restrictions": [
+        "no_training",
+        "no_fine_tuning_without_approval"
+      ]
+    },
+    {
+      "name": "AI2 OLMo 3 32B Think",
+      "organization": "Allen Institute for AI",
+      "origin_country": "USA",
+      "license": "Apache-2.0",
+      "huggingface_id": "allenai/OLMo-3-32B-Think",
+      "approved_date": "2026-05-18",
+      "use_cases": [
+        "chain_of_thought_reasoning",
+        "complex_analysis",
+        "step_by_step_planning"
+      ],
+      "restrictions": [
+        "no_training",
+        "no_fine_tuning_without_approval"
+      ]
+    },
+    {
+      "name": "IBM Granite 4.1 30B Base",
+      "organization": "IBM",
+      "origin_country": "USA",
+      "license": "Apache-2.0",
+      "huggingface_id": "ibm-granite/granite-4.1-30b-base",
+      "approved_date": "2026-05-18",
+      "use_cases": [
+        "enterprise_reasoning",
+        "code_analysis",
+        "technical_documentation"
+      ],
+      "restrictions": [
+        "no_training",
+        "no_fine_tuning_without_approval"
+      ]
+    }
+  ],
+  "prohibited_origins": {
+    "description": "Models from these origins or trained on their data are prohibited",
+    "excluded_countries": ["PRC", "CN"],
+    "excluded_organizations": [
+      "Alibaba Cloud",
+      "DeepSeek AI",
+      "Moonshot AI",
+      "Zhipu AI",
+      "Tsinghua University (for LLM projects)",
+      "MiniMax",
+      "Baidu",
+      "Tencent AI Lab",
+      "ByteDance AI Lab"
+    ],
+    "prohibited_model_families": [
+      "Qwen",
+      "DeepSeek",
+      "Kimi",
+      "GLM",
+      "ChatGLM",
+      "MiniMax",
+      "ERNIE",
+      "Llama"
+    ],
+    "rationale": "Security and supply chain integrity requirements"
+  },
+  "verification_requirements": {
+    "model_download": [
+      "verify_checksum",
+      "verify_origin",
+      "log_to_audit_trail"
+    ],
+    "model_usage": [
+      "verify_allowlist",
+      "check_authorization",
+      "log_inference_request"
+    ],
+    "dataset_usage": [
+      "verify_no_prc_origin",
+      "document_provenance",
+      "log_usage"
+    ]
+  },
+  "enforcement": {
+    "unknown_model": "fail_closed",
+    "prohibited_model": "fail_closed_and_alert",
+    "unverifiable_origin": "fail_closed",
+    "allowlist_violation_response": "immediate_termination_and_audit_log"
+  }
+}

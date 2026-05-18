@@ -1,0 +1,76 @@
+{
+  "project": {
+    "name": "zp42",
+    "version": "0.1.0",
+    "license": "LicenseRef-Proprietary",
+    "owner": "iQs Group Inc.",
+    "copyright": "Copyright (c) 2026 iQs Group Inc. All rights reserved."
+  },
+  "dependencies": {
+    "direct": [
+      {
+        "name": "pytest",
+        "version": ">=7.4.0",
+        "license": "MIT",
+        "purpose": "testing",
+        "approved": true
+      }
+    ],
+    "dev": [
+      {
+        "name": "pre-commit",
+        "version": ">=3.0.0",
+        "license": "MIT",
+        "purpose": "code quality",
+        "approved": true
+      },
+      {
+        "name": "black",
+        "version": ">=23.0.0",
+        "license": "MIT",
+        "purpose": "code formatting",
+        "approved": true
+      },
+      {
+        "name": "ruff",
+        "version": ">=0.1.0",
+        "license": "MIT",
+        "purpose": "linting",
+        "approved": true
+      },
+      {
+        "name": "mypy",
+        "version": ">=1.0.0",
+        "license": "MIT",
+        "purpose": "type checking",
+        "approved": true
+      }
+    ]
+  },
+  "license_policy": {
+    "approved_licenses": [
+      "MIT",
+      "Apache-2.0",
+      "BSD-3-Clause",
+      "BSD-2-Clause",
+      "ISC"
+    ],
+    "review_required_licenses": [
+      "MPL-2.0",
+      "EPL-2.0",
+      "LGPL-3.0"
+    ],
+    "prohibited_licenses": [
+      "GPL-3.0",
+      "GPL-2.0",
+      "AGPL-3.0",
+      "SSPL"
+    ]
+  },
+  "compliance_notes": {
+    "proprietary_code": "All ZP42 source code is proprietary to iQs Group Inc.",
+    "third_party_code": "All third-party dependencies must have approved open-source licenses",
+    "model_licenses": "All approved models use Apache-2.0 license",
+    "distribution": "No distribution of ZP42 code permitted without written authorization"
+  }
+}

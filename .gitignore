@@ -1,0 +1,80 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+.hypothesis/
+
+# Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pytype/
+
+# Audit logs (local dev only)
+governance/logs/*.jsonl
+!governance/logs/.gitkeep
+
+# Temporary files
+*.log
+*.tmp
+.tmp/
+temp/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Model weights and data (never commit)
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.bin
+*.onnx
+data/models/
+data/checkpoints/

@@ -1,0 +1,155 @@
+{
+  "schema_version": "1.0.0",
+  "description": "ZP42 audit log schema for append-only JSONL audit trail",
+  "format": "jsonl",
+  "fields": {
+    "timestamp": {
+      "type": "string",
+      "format": "ISO 8601 UTC",
+      "required": true,
+      "description": "Operation timestamp in format YYYY-MM-DDTHH:MM:SS.ffffffZ",
+      "example": "2026-05-18T14:30:45.123456Z"
+    },
+    "event_id": {
+      "type": "string",
+      "format": "uuid4",
+      "required": true,
+      "description": "Unique identifier for this audit event",
+      "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+    },
+    "operation_type": {
+      "type": "string",
+      "required": true,
+      "enum": [
+        "lane_assignment",
+        "authorization_check",
+        "human_gate_request",
+        "human_gate_approval",
+        "human_gate_denial",
+        "model_reference",
+        "model_download_attempt",
+        "inference_request",
+        "escalation_attempt",
+        "policy_violation",
+        "roe_check",
+        "capability_request",
+        "operation_start",
+        "operation_complete",
+        "operation_failed"
+      ],
+      "description": "Type of operation being audited"
+    },
+    "lane": {
+      "type": "string",
+      "required": true,
+      "enum": ["A", "B", "C", "unknown"],
+      "description": "Operational lane: A=defensive, B=active-defense, C=sovereign-authorized, unknown=unassigned"
+    },
+    "authorization_reference": {
+      "type": "string",
+      "required": false,
+      "description": "Reference to authorization document or system authorization ID",
+      "example": "AUTH-2026-05-18-001"
+    },
+    "actor": {
+      "type": "object",
+      "required": true,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["system", "human", "api"],
+          "description": "Type of actor initiating the operation"
+        },
+        "identifier": {
+          "type": "string",
+          "description": "Actor identifier (user ID, API key ID, system component name)"
+        }
+      }
+    },
+    "operation_details": {
+      "type": "object",
+      "required": false,
+      "description": "Operation-specific details (flexible schema)",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Human-readable operation description"
+        },
+        "parameters": {
+          "type": "object",
+          "description": "Operation parameters (sanitized, no secrets)"
+        }
+      }
+    },
+    "result": {
+      "type": "string",
+      "required": true,
+      "enum": ["success", "failure", "denied", "pending"],
+      "description": "Operation result"
+    },
+    "failure_reason": {
+      "type": "string",
+      "required": false,
+      "description": "Reason for failure or denial"
+    },
+    "escalation_attempt": {
+      "type": "boolean",
+      "required": false,
+      "default": false,
+      "description": "Whether this operation attempted unauthorized escalation"
+    },
+    "policy_violations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "required": false,
+      "description": "List of policy violations detected"
+    }
+  },
+  "example_events": [
+    {
+      "timestamp": "2026-05-18T14:30:45.123456Z",
+      "event_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      "operation_type": "lane_assignment",
+      "lane": "A",
+      "authorization_reference": "CUST-AUTH-2026-001",
+      "actor": {
+        "type": "system",
+        "identifier": "orchestrator.lanes.lane_policy"
+      },
+      "operation_details": {
+        "description": "Assigned operation to Lane A based on customer authorization",
+        "parameters": {
+          "customer_id": "customer_123"
+        }
+      },
+      "result": "success",
+      "escalation_attempt": false
+    },
+    {
+      "timestamp": "2026-05-18T14:31:20.456789Z",
+      "event_id": "a1b2c3d4-e5f6-4a5b-9c8d-7e6f5a4b3c2d",
+      "operation_type": "human_gate_request",
+      "lane": "C",
+      "authorization_reference": "SOV-AUTH-2026-042",
+      "actor": {
+        "type": "system",
+        "identifier": "orchestrator.human_gate"
+      },
+      "operation_details": {
+        "description": "Requesting human approval for Lane C operation",
+        "parameters": {
+          "operation": "controlled_engagement"
+        }
+      },
+      "result": "pending"
+    }
+  ],
+  "retention_policy": {
+    "description": "Audit log retention requirements (to be implemented in production)",
+    "minimum_retention_days": 2555,
+    "archive_format": "encrypted_jsonl_gzip",
+    "storage_location": "TODO_REQUIRED"
+  }
+}
