@@ -1882,7 +1882,7 @@ ZP42 serves 15 industries with 45 distinct use cases (3 per industry). Each use 
 
 **Use Case 1: HIPAA Compliance and PHI Protection**
 - **Lane**: A (Defensive)
-- **Scenario**: Healthcare provider monitors access to protected health information (PHI). ZP42 detects unauthorized access attempts and validates HIPAA controls.
+- **Scenario**: Healthcare provider monitors access to protected health information (PHI). ZP42 detects improper access attempts and validates HIPAA controls.
 - **ZP42 Components**: ROE engine for HIPAA policy enforcement, audit logger for compliance documentation.
 - **Outcome**: Continuous HIPAA compliance, reduced breach risk.
 
@@ -2012,7 +2012,7 @@ ZP42 serves 15 industries with 45 distinct use cases (3 per industry). Each use 
 
 **Use Case 1: Fleet Telematics Security Monitoring**
 - **Lane**: A (Defensive)
-- **Scenario**: Logistics company monitors telematics systems for unauthorized access. ZP42 detects anomalous vehicle commands and location data access.
+- **Scenario**: Logistics company monitors telematics systems for improper access. ZP42 detects anomalous vehicle commands and location data access.
 - **ZP42 Components**: HOSH-b for real-time monitoring, RAG for telematics threat patterns.
 - **Outcome**: Protected fleet operations.
 
@@ -2116,7 +2116,7 @@ ZP42 serves 15 industries with 45 distinct use cases (3 per industry). Each use 
 
 **Use Case 1: Research Network Security Monitoring**
 - **Lane**: A (Defensive)
-- **Scenario**: University monitors research network for data exfiltration attempts. ZP42 detects anomalous data transfers and unauthorized access.
+- **Scenario**: University monitors research network for data exfiltration attempts. ZP42 detects anomalous data transfers and improper access.
 - **ZP42 Components**: HOSH-b for network monitoring, RAG for research institution threat intelligence.
 - **Outcome**: Protected research data.
 
