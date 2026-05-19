@@ -1,0 +1,74 @@
+# ZP42 Gitleaks Configuration
+# Secret scanning configuration for pre-commit and CI/CD
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "github-pat"
+description = "GitHub Personal Access Token"
+regex = '''github_pat_[a-zA-Z0-9]{82}'''
+tags = ["key", "github"]
+
+[[rules]]
+id = "github-oauth"
+description = "GitHub OAuth Access Token"
+regex = '''gho_[0-9a-zA-Z]{36}'''
+tags = ["key", "github"]
+
+[[rules]]
+id = "github-app-token"
+description = "GitHub App Token"
+regex = '''(ghu|ghs)_[0-9a-zA-Z]{36}'''
+tags = ["key", "github"]
+
+[[rules]]
+id = "github-refresh-token"
+description = "GitHub Refresh Token"
+regex = '''ghr_[0-9a-zA-Z]{76}'''
+tags = ["key", "github"]
+
+[[rules]]
+id = "generic-api-key"
+description = "Generic API Key"
+regex = '''[a-zA-Z0-9_-]*api[_-]?key[a-zA-Z0-9_-]*['"][a-zA-Z0-9]{16,}['"]'''
+tags = ["key", "api"]
+
+[[rules]]
+id = "generic-secret"
+description = "Generic Secret"
+regex = '''[a-zA-Z0-9_-]*secret[a-zA-Z0-9_-]*['"][a-zA-Z0-9]{16,}['"]'''
+tags = ["secret"]
+
+[[rules]]
+id = "private-key"
+description = "Private Key"
+regex = '''-----BEGIN (RSA|OPENSSH|DSA|EC|PGP) PRIVATE KEY-----'''
+tags = ["key", "private-key"]
+
+[[rules]]
+id = "aws-access-key"
+description = "AWS Access Key ID"
+regex = '''(A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}'''
+tags = ["key", "aws"]
+
+[[rules]]
+id = "aws-secret-key"
+description = "AWS Secret Access Key"
+regex = '''aws(.{0,20})?['\"][0-9a-zA-Z/+]{40}['\"]'''
+tags = ["key", "aws"]
+
+[allowlist]
+description = "Global allowlist for false positives"
+regexes = [
+    # Allowlist scanner source code pattern definitions
+    '''scripts/scan_prohibited_terms\.py.*github_pat_''',
+    '''scripts/secret-kill-switch\.sh.*github_pat_''',
+    '''\.gitleaks\.toml.*github_pat_''',
+]
+paths = [
+    # Allowlist test fixtures
+    '''tests/.*''',
+    # Allowlist documentation examples (use with caution)
+    '''docs/examples/.*''',
+]

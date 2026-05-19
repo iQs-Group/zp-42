@@ -36,8 +36,8 @@ class ROEEngine:
         "persistence_installation",
         "evasion_technique",
         "destructive_payload",
-        "autonomous_retaliation",
-        "hack_back",
+        "autonomous_counter_action",
+        "unauthorized_response_action",
         "unauthorized_third_party_targeting",
     }
 

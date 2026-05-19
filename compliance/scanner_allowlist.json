@@ -1,0 +1,22 @@
+{
+  "version": "1.0.0",
+  "description": "Scanner allowlist for expected violations in scanner source code, test fixtures, and model policy documentation",
+  "allowlisted_files": [
+    "scripts/scan_prohibited_terms.py",
+    "tests/test_prohibited_terms.py",
+    "compliance/model_allowlist.json"
+  ],
+  "rationale": {
+    "scripts/scan_prohibited_terms.py": "Scanner source code contains pattern definitions for detection - not actual violations",
+    "tests/test_prohibited_terms.py": "Test fixtures intentionally contain prohibited terms to validate scanner functionality",
+    "compliance/model_allowlist.json": "Model policy documentation lists prohibited models in blocklist - required for policy enforcement"
+  },
+  "audit_trail": [
+    {
+      "date": "2026-05-18",
+      "action": "created",
+      "reason": "Initial allowlist for scanner infrastructure files",
+      "approved_by": "foundation_pr_t001"
+    }
+  ]
+}
