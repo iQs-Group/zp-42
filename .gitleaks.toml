@@ -1,0 +1,70 @@
+# Gitleaks Configuration for ZP42
+# Detects secrets, credentials, and sensitive data
+
+title = "ZP42 Secret Scanning"
+
+[extend]
+# Use default gitleaks rules as base
+useDefault = true
+
+[[rules]]
+id = "github-pat"
+description = "GitHub Personal Access Token"
+regex = '''github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}'''
+tags = ["key", "github"]
+
+[[rules]]
+id = "github-fine-grained-pat"
+description = "GitHub Fine-Grained Personal Access Token"
+regex = '''github_pat_[a-zA-Z0-9_]{82}'''
+tags = ["key", "github"]
+
+[[rules]]
+id = "github-oauth"
+description = "GitHub OAuth Access Token"
+regex = '''gho_[a-zA-Z0-9]{36}'''
+tags = ["key", "github"]
+
+[[rules]]
+id = "aws-access-key"
+description = "AWS Access Key ID"
+regex = '''(A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}'''
+tags = ["key", "aws"]
+
+[[rules]]
+id = "aws-secret-key"
+description = "AWS Secret Access Key"
+regex = '''(?i)aws(.{0,20})?['\"][0-9a-zA-Z/+]{40}['\"]'''
+tags = ["key", "aws"]
+
+[[rules]]
+id = "private-key"
+description = "Private Key"
+regex = '''-----BEGIN[ A-Z]*PRIVATE KEY-----'''
+tags = ["key", "private"]
+
+[[rules]]
+id = "generic-api-key"
+description = "Generic API Key"
+regex = '''(?i)(api[_-]?key|apikey)['\"]?\s*[:=]\s*['\"]?[a-zA-Z0-9_\-]{20,}['\"]?'''
+tags = ["key", "generic"]
+
+[allowlist]
+description = "Allowlist for false positives"
+regexes = [
+    # Test fixtures and examples
+    '''example[_-]?token''',
+    '''fake[_-]?key''',
+    '''test[_-]?secret''',
+    '''dummy[_-]?password''',
+    '''placeholder''',
+]
+paths = [
+    # Documentation and test files can contain example secrets
+    '''(.*)?tests/.*''',
+    '''(.*)?test_.*\.py''',
+    '''(.*)?docs/.*\.md''',
+    '''(.*)?README\.md''',
+    # Gitleaks config itself
+    '''\.gitleaks\.toml''',
+]

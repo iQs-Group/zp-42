@@ -1,0 +1,33 @@
+{
+  "description": "Allowlist for prohibited term scanner - files/contexts where prohibited terms are permitted",
+  "version": "1.0.0",
+  "allowlist": [
+    {
+      "file_pattern": "scripts/scan_prohibited_terms.py",
+      "reason": "Scanner source code contains term definitions",
+      "allowed_contexts": ["term definitions", "pattern matching rules"]
+    },
+    {
+      "file_pattern": "tests/test_prohibited_terms.py",
+      "reason": "Test fixtures require example violations to verify scanner behavior",
+      "allowed_contexts": ["test fixtures", "assert statements", "test data"]
+    },
+    {
+      "file_pattern": "compliance/model_allowlist.json",
+      "reason": "Blocklist section documents prohibited models for reference",
+      "allowed_contexts": ["prohibited_models blocklist", "model documentation"]
+    },
+    {
+      "file_pattern": "compliance/scanner_allowlist.json",
+      "reason": "This allowlist file documents its own purpose",
+      "allowed_contexts": ["self-reference", "documentation"]
+    }
+  ],
+  "strict_enforcement": {
+    "block_in_production_code": true,
+    "block_in_public_docs": true,
+    "block_in_internal_docs": false,
+    "allow_test_fixtures": true,
+    "allow_scanner_definitions": true
+  }
+}

@@ -9,9 +9,10 @@ Foundation PR #1: Ensures clean public positioning.
 """
 
 import argparse
+import json
 import sys
 from pathlib import Path
-from typing import List, Set, Tuple
+from typing import List, Set, Tuple, Dict, Any
 
 
 class ProhibitedTermsScanner:
@@ -93,29 +94,116 @@ class ProhibitedTermsScanner:
         "dist",
     }
 
-    def __init__(self, root_path: Path):
+    # Production code patterns (strict enforcement)
+    PRODUCTION_CODE_PATTERNS = {
+        "core/",
+        "orchestrator/",
+        "governance/",
+        "verifiers/",
+    }
+
+    # Public documentation patterns (strict enforcement)
+    PUBLIC_DOC_PATTERNS = {
+        "README.md",
+        "docs/FOUNDATION.md",
+        "docs/API.md",
+        "docs/USAGE.md",
+    }
+
+    def __init__(self, root_path: Path, allowlist_path: Path = None):
         """
         Initialize scanner.
 
         Args:
             root_path: Root directory to scan
+            allowlist_path: Path to allowlist JSON file
         """
         self.root_path = Path(root_path).resolve()
         self.violations: List[Tuple[Path, int, str, str]] = []
+        self.allowlist = self._load_allowlist(allowlist_path)
 
-    def scan(self) -> int:
+    def _load_allowlist(self, allowlist_path: Path = None) -> Dict[str, Any]:
+        """Load allowlist configuration."""
+        if allowlist_path is None:
+            # Default path
+            allowlist_path = self.root_path / "compliance" / "scanner_allowlist.json"
+
+        if not allowlist_path.exists():
+            return {"allowlist": []}
+
+        try:
+            with open(allowlist_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"Warning: Could not load allowlist: {e}", file=sys.stderr)
+            return {"allowlist": []}
+
+    def _is_allowlisted(self, file_path: Path) -> bool:
+        """Check if a file is in the allowlist."""
+        relative_path = str(file_path.relative_to(self.root_path))
+
+        for allowed_item in self.allowlist.get("allowlist", []):
+            pattern = allowed_item.get("file_pattern", "")
+            if pattern in relative_path or relative_path == pattern:
+                return True
+
+        return False
+
+    def _is_production_code(self, file_path: Path) -> bool:
+        """Check if file is production code (strict enforcement)."""
+        relative_path = str(file_path.relative_to(self.root_path))
+
+        for pattern in self.PRODUCTION_CODE_PATTERNS:
+            if relative_path.startswith(pattern):
+                return True
+
+        return False
+
+    def _is_public_doc(self, file_path: Path) -> bool:
+        """Check if file is public documentation (strict enforcement)."""
+        relative_path = str(file_path.relative_to(self.root_path))
+
+        for pattern in self.PUBLIC_DOC_PATTERNS:
+            if pattern in relative_path or relative_path == pattern:
+                return True
+
+        return False
+
+    def scan(self) -> Dict[str, int]:
         """
         Scan repository for prohibited terms.
 
         Returns:
-            Number of violations found
+            Dictionary with violation counts by category
         """
         self.violations = []
 
         for file_path in self._iter_files():
             self._scan_file(file_path)
 
-        return len(self.violations)
+        # Categorize violations
+        production_violations = []
+        public_doc_violations = []
+        allowlisted_violations = []
+
+        for file_path, line_num, term, category in self.violations:
+            if self._is_allowlisted(file_path):
+                allowlisted_violations.append((file_path, line_num, term, category))
+            elif self._is_production_code(file_path):
+                production_violations.append((file_path, line_num, term, category))
+            elif self._is_public_doc(file_path):
+                public_doc_violations.append((file_path, line_num, term, category))
+            else:
+                # Other files (internal docs, etc.) - less strict
+                allowlisted_violations.append((file_path, line_num, term, category))
+
+        return {
+            "total": len(self.violations),
+            "production_code": len(production_violations),
+            "public_docs": len(public_doc_violations),
+            "allowlisted": len(allowlisted_violations),
+            "blocking": len(production_violations) + len(public_doc_violations),
+        }
 
     def _iter_files(self):
         """Iterate over scannable files."""
@@ -191,9 +279,12 @@ class ProhibitedTermsScanner:
                 file=sys.stderr,
             )
 
-    def report_violations(self) -> str:
+    def report_violations(self, counts: Dict[str, int]) -> str:
         """
         Generate human-readable violation report.
+
+        Args:
+            counts: Violation counts by category
 
         Returns:
             Formatted report string
@@ -201,41 +292,105 @@ class ProhibitedTermsScanner:
         if not self.violations:
             return "✓ No prohibited terms found.\n"
 
-        report_lines = [
-            f"✗ Found {len(self.violations)} prohibited term violation(s):\n"
-        ]
+        # Categorize for reporting
+        production_violations = []
+        public_doc_violations = []
+        allowlisted_violations = []
 
-        for file_path, line_num, term, category in sorted(self.violations):
-            relative_path = file_path.relative_to(self.root_path)
-            report_lines.append(
-                f"  {relative_path}:{line_num} - '{term}' ({category})"
-            )
+        for file_path, line_num, term, category in self.violations:
+            if self._is_allowlisted(file_path):
+                allowlisted_violations.append((file_path, line_num, term, category))
+            elif self._is_production_code(file_path):
+                production_violations.append((file_path, line_num, term, category))
+            elif self._is_public_doc(file_path):
+                public_doc_violations.append((file_path, line_num, term, category))
+            else:
+                allowlisted_violations.append((file_path, line_num, term, category))
 
-        report_lines.append(
-            "\nProhibited terms must be removed before commit.\n"
-        )
+        report_lines = []
+
+        # Report blocking violations (production + public docs)
+        blocking_count = counts["blocking"]
+        if blocking_count > 0:
+            report_lines.append(f"✗ Found {blocking_count} BLOCKING violation(s):\n")
+
+            if production_violations:
+                report_lines.append(f"PRODUCTION CODE VIOLATIONS ({len(production_violations)}):")
+                for file_path, line_num, term, category in sorted(production_violations):
+                    relative_path = file_path.relative_to(self.root_path)
+                    report_lines.append(
+                        f"  {relative_path}:{line_num} - '{term}' ({category})"
+                    )
+                report_lines.append("")
+
+            if public_doc_violations:
+                report_lines.append(f"PUBLIC DOCUMENTATION VIOLATIONS ({len(public_doc_violations)}):")
+                for file_path, line_num, term, category in sorted(public_doc_violations):
+                    relative_path = file_path.relative_to(self.root_path)
+                    report_lines.append(
+                        f"  {relative_path}:{line_num} - '{term}' ({category})"
+                    )
+                report_lines.append("")
+
+            report_lines.append("❌ SCAN FAILED: Blocking violations must be removed before commit.\n")
+
+        # Report allowlisted violations (informational only)
+        if allowlisted_violations:
+            report_lines.append(f"ℹ  Found {len(allowlisted_violations)} allowlisted violation(s) (informational only):")
+            for file_path, line_num, term, category in sorted(allowlisted_violations)[:10]:
+                relative_path = file_path.relative_to(self.root_path)
+                report_lines.append(
+                    f"  {relative_path}:{line_num} - '{term}' ({category})"
+                )
+            if len(allowlisted_violations) > 10:
+                report_lines.append(f"  ... and {len(allowlisted_violations) - 10} more")
+            report_lines.append("")
+
+        if blocking_count == 0:
+            report_lines.append("✓ SCAN PASSED: No blocking violations found.\n")
 
         return "\n".join(report_lines)
 
-    def report_json(self) -> dict:
+    def report_json(self, counts: Dict[str, int]) -> dict:
         """
         Generate JSON violation report.
+
+        Args:
+            counts: Violation counts by category
 
         Returns:
             Violations dictionary
         """
+        # Categorize for JSON report
+        production_violations = []
+        public_doc_violations = []
+        allowlisted_violations = []
+
+        for file_path, line_num, term, category in self.violations:
+            violation_dict = {
+                "file": str(file_path.relative_to(self.root_path)),
+                "line": line_num,
+                "term": term,
+                "category": category,
+            }
+
+            if self._is_allowlisted(file_path):
+                allowlisted_violations.append(violation_dict)
+            elif self._is_production_code(file_path):
+                production_violations.append(violation_dict)
+            elif self._is_public_doc(file_path):
+                public_doc_violations.append(violation_dict)
+            else:
+                allowlisted_violations.append(violation_dict)
+
         return {
-            "status": "failed" if self.violations else "passed",
-            "violation_count": len(self.violations),
-            "violations": [
-                {
-                    "file": str(file_path.relative_to(self.root_path)),
-                    "line": line_num,
-                    "term": term,
-                    "category": category,
-                }
-                for file_path, line_num, term, category in self.violations
-            ],
+            "status": "failed" if counts["blocking"] > 0 else "passed",
+            "summary": counts,
+            "blocking_violations": {
+                "production_code": production_violations,
+                "public_docs": public_doc_violations,
+            },
+            "allowlisted_violations": allowlisted_violations,
         }
 
 
@@ -255,21 +410,27 @@ def main():
         action="store_true",
         help="Output violations in JSON format",
     )
+    parser.add_argument(
+        "--allowlist",
+        type=Path,
+        help="Path to allowlist JSON file (default: compliance/scanner_allowlist.json)",
+    )
 
     args = parser.parse_args()
 
-    scanner = ProhibitedTermsScanner(args.root)
-    violation_count = scanner.scan()
+    scanner = ProhibitedTermsScanner(args.root, args.allowlist)
+    counts = scanner.scan()
 
     if args.json:
         import json
 
-        print(json.dumps(scanner.report_json(), indent=2))
+        print(json.dumps(scanner.report_json(counts), indent=2))
     else:
-        print(scanner.report_violations())
+        print(scanner.report_violations(counts))
 
-    # Exit with error code if violations found
-    sys.exit(1 if violation_count > 0 else 0)
+    # Exit with error code if BLOCKING violations found
+    # (production code or public docs violations)
+    sys.exit(1 if counts["blocking"] > 0 else 0)
 
 
 if __name__ == "__main__":

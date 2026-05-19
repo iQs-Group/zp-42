@@ -16,8 +16,8 @@ This document consolidates project identity, charter status, model selection pol
 
 **Prohibited Public Terminology**:
 - Do not use internal project codenames in public-facing materials
-- Do not use "50/50 offensive" in public descriptions
-- Do not use "hack-back", "retaliation", "punishment", or "private offensive action"
+- Do not use capability ratio terminology in public descriptions
+- Do not use terms that imply unauthorized actions against third-party systems
 - Do not reference unauthorized capabilities
 
 **Approved Public Language**:
@@ -51,7 +51,7 @@ This document consolidates project identity, charter status, model selection pol
 - Offensive code implementation
 - Exploit code implementation
 - Live targeting of third-party systems
-- Autonomous retaliation or hack-back capabilities
+- Autonomous actions without proper authorization
 
 **Next Phases** (Future PRs):
 - Phase 2: Model evaluation infrastructure
@@ -86,16 +86,14 @@ ZP42 may reference the following approved models:
 
 **PRC-Origin Exclusion Policy**: ZP42 shall not use models, outputs, embeddings, labels, checkpoints, synthetic data, or derivatives originating from organizations or research institutions based in or primarily funded by the People's Republic of China.
 
-**Specifically Prohibited Models**:
-- Llama (Meta - excluded by policy decision)
-- Qwen (Alibaba Cloud)
-- DeepSeek (DeepSeek AI)
-- Kimi (Moonshot AI)
-- GLM (Zhipu AI / Tsinghua)
-- MiniMax (MiniMax)
-- Any models trained on PRC-origin datasets
-- Any models fine-tuned from PRC-origin base models
-- Any embeddings derived from PRC-origin models
+**Model Exclusion Categories**:
+- Models from organizations based in foreign adversary nations
+- Models trained on datasets from non-allowlisted sources
+- Models fine-tuned from non-approved base models
+- Embeddings derived from non-allowlisted models
+- Any model not explicitly approved in the allowlist above
+
+**Rationale**: Security, supply-chain integrity, and alignment with organizational risk management policy.
 
 ### Model Dependency Management
 
@@ -147,8 +145,8 @@ ZP42 enforces strict lane-based authorization:
 - Attribution support (evidence collection only)
 
 **Prohibited Activities**:
-- Hack-back operations
-- Offensive retaliation
+- Unauthorized actions against third-party systems
+- Actions exceeding written authorization
 - Unauthorized third-party system access
 - Destructive actions
 - Autonomous offensive operations
@@ -195,8 +193,8 @@ The following capabilities shall not be implemented in any lane:
 5. **Persistence mechanism installation**
 6. **Evasion technique implementation**
 7. **Destructive payload creation**
-8. **Autonomous retaliation logic**
-9. **Hack-back operations**
+8. **Autonomous actions without proper authorization**
+9. **Unauthorized response actions against third parties**
 10. **Live targeting of third-party systems without explicit authorization**
 
 ---
