@@ -79,7 +79,7 @@ python scripts/scan_prohibited_terms.py --root .
 
 ## License
 
-ZP42 is proprietary software. See `docs/FOUNDATION.md` for licensing details.
+ZP42 is open-source software released under the **MIT License** by Naquib Hatami. See the [`LICENSE`](LICENSE) file. You are free to use, modify, and distribute it under the terms of that licence.
 
 ## Governance
 

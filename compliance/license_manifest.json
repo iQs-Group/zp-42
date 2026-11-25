@@ -2,9 +2,9 @@
   "project": {
     "name": "zp42",
     "version": "0.1.0",
-    "license": "LicenseRef-Proprietary",
-    "owner": "iQs Group Inc.",
-    "copyright": "Copyright (c) 2026 iQs Group Inc. All rights reserved."
+    "license": "MIT",
+    "owner": "Naquib Hatami",
+    "copyright": "Copyright (c) 2026 Naquib Hatami. Released under the MIT License."
   },
   "dependencies": {
     "direct": [
@@ -68,9 +68,8 @@
     ]
   },
   "compliance_notes": {
-    "proprietary_code": "All ZP42 source code is proprietary to iQs Group Inc.",
+    "project_code": "ZP42 source code is released under the MIT License by Naquib Hatami.",
     "third_party_code": "All third-party dependencies must have approved open-source licenses",
-    "model_licenses": "All approved models use Apache-2.0 license",
-    "distribution": "No distribution of ZP42 code permitted without written authorization"
+    "distribution": "ZP42 is distributed under the MIT License; redistribution is permitted under its terms."
   }
 }

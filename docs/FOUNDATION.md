@@ -250,17 +250,15 @@ Lessons learned from Parallax Round 2:
 
 ## License Notice
 
-**ZP42 is proprietary software owned by iQs Group Inc.**
+**ZP42 is open-source software, released under the MIT License by Naquib Hatami.**
 
-Unless a separate written release or licensing decision is approved by authorized iQs Group Inc. leadership, all rights are reserved.
+**Open Source License**: This project is licensed under the [MIT License](../LICENSE). You may use, copy, modify, merge, publish, distribute, sublicense, and sell copies, subject to preserving the copyright and permission notice.
 
-**No Open Source License**: This project is not licensed under any open-source license (Apache, MIT, GPL, etc.). All code, documentation, and artifacts are proprietary.
+**Use**: ZP42 is offered openly for defensive, active-defence, and sovereign-authorised research and deployment. Operators remain responsible for operating it only within authorised scope.
 
-**Internal Use**: ZP42 is intended for internal iQs Group development and authorized customer deployments only.
+**Distribution**: Redistribution is permitted under the terms of the MIT License.
 
-**Third-Party Distribution**: Distribution to third parties requires explicit written authorization from iQs Group Inc. leadership.
-
-**Contributions**: All contributions to this repository become the property of iQs Group Inc.
+**Contributions**: Contributions are accepted under the MIT License (see `CONTRIBUTING` where present); contributors retain their copyright and license their contributions under MIT.
 
 ---
 
